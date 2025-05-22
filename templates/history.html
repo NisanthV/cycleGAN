@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        body {
+            background: linear-gradient(120deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 2.3rem;
+            letter-spacing: 1.5px;
+            text-shadow: 0 4px 24px rgba(30,60,114,0.3);
+            animation: fadeInDown 1s;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .image-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(30,60,114,0.13);
+            padding: 1.5rem 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .image-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+        }
+        .image-card h3 {
+            color: #2a5298;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .image-pair {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-pair img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #e3eafc;
+            box-shadow: 0 2px 8px rgba(30,60,114,0.10);
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: #f4f8fb;
+        }
+        .image-pair img:hover {
+            transform: scale(1.07) rotate(-2deg);
+            box-shadow: 0 6px 24px rgba(30,60,114,0.18);
+        }
+        p {
+            color: #fff;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(30,60,114,0.85);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            position: relative;
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-content img {
+            max-width: 80vw;
+            max-height: 70vh;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 24px rgba(30,60,114,0.13);
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 18px;
+            font-size: 2rem;
+            color: #2a5298;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #d32f2f;
+        }
+        @media (max-width: 700px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+                padding: 1rem 0.2rem;
+            }
+            .image-pair {
+                flex-direction: column;
+                gap: 0.7rem;
+            }
+            .image-pair img {
+                width: 90vw;
+                max-width: 260px;
+                height: 120px;
+            }
+        }
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+            .image-card {
+                padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+    </style>
+    <h1>Conversion History</h1>
+    <div class="image-grid">
+        {% for image in images %}
+            <div class="image-card">
+                <h3>{{ image.direction }} - {{ image.created_at }}</h3>
+                <div class="image-pair">
+                    <img src="{{ image.original_image.url }}" alt="Original">
+                    <img src="{{ image.converted_image.url }}" alt="Converted">
+                </div>
+            </div>
+        {% empty %}
+            <p>No conversions found.</p>
+        {% endfor %}
+    </div>
+    <!-- Modal for fullscreen image -->
+    <div class="modal" id="imgModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <img id="modalImg" src="" alt="Full Image">
+        </div>
+    </div>
+    <script>
+        // Modal logic
+        const modal = document.getElementById('imgModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.getElementById('closeModal');
+        document.querySelectorAll('.history-img').forEach(img => {
+            img.addEventListener('click', function() {
+                modal.classList.add('active');
+                modalImg.src = this.dataset.img;
+            });
+        });
+        closeModal.onclick = function() {
+            modal.classList.remove('active');
+            modalImg.src = '';
+        };
+        // Close modal on outside click
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                modalImg.src = '';
+            }
+        };
+    </script>
+{% endblock %}

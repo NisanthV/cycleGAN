@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .register-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify: center;
+            min-height: 60vh;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        h2 {
+            color: #2a5298;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px rgba(30,60,114,0.10);
+            animation: popIn 1.2s;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0;}
+            80% { transform: scale(1.05);}
+            100% { transform: scale(1); opacity: 1;}
+        }
+        form {
+            background: rgba(255,255,255,0.97);
+            padding: 2rem 1.5rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.10);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            min-width: 320px;
+            max-width: 95vw;
+            animation: fadeIn 1.5s;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        label {
+            color: #1e3c72;
+            font-weight: 500;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            background: #f4f8fb;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border: 1.5px solid #2a5298;
+            outline: none;
+        }
+        input[type="email"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            background: #f4f8fb;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        input[type="email"]:focus {
+            border: 1.5px solid #2a5298;
+            outline: none;
+        }
+        button[type="submit"] {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(30,60,114,0.12);
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 16px rgba(30,60,114,0.18);
+        }
+        p {
+            color: #1e3c72;
+            text-align: center;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+        }
+        p a {
+            color: #2a5298;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        p a:hover {
+            color: #1e3c72;
+        }
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.3rem;
+            }
+            form {
+                padding: 1rem 0.5rem;
+                min-width: unset;
+            }
+            .register-container {
+                padding: 1rem 0.2rem;
+            }
+        }
+    </style>
+    <div class="register-container">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_email">Email:</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_password1">Password:</label>
+                {{ form.password1 }}
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Confirm Password:</label>
+                {{ form.password2 }}
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+{% endblock %}

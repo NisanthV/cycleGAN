@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding: 2rem 1rem;
+            background: linear-gradient(120deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+            animation: fadeIn 1s;
+        }
+        .preview-img {
+            display: none;
+            margin: 0 auto 1rem auto;
+            max-width: 220px;
+            max-height: 220px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(30,60,114,0.10);
+            background: #f4f8fb;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .upload-title {
+            color: #fff;
+            margin-bottom: 24px;
+            font-size: 2.2rem;
+            letter-spacing: 1.5px;
+            text-shadow: 0 4px 24px rgba(30,60,114,0.3);
+            animation: popIn 1.2s;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0;}
+            80% { transform: scale(1.05);}
+            100% { transform: scale(1); opacity: 1;}
+        }
+        .upload-form {
+            background: rgba(255,255,255,0.97);
+            padding: 2rem 1.5rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.10);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            min-width: 320px;
+            max-width: 95vw;
+            animation: fadeIn 1.5s;
+        }
+        .upload-form input[type="file"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            background: #f4f8fb;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .upload-form input[type="file"]:focus {
+            border: 1.5px solid #2a5298;
+            outline: none;
+        }
+        .btn {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(30,60,114,0.12);
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 16px rgba(30,60,114,0.18);
+        }
+        @media (max-width: 600px) {
+            .upload-title {
+                font-size: 1.3rem;
+            }
+            .upload-form {
+                padding: 1rem 0.5rem;
+                min-width: unset;
+            }
+            .upload-container {
+                padding: 1rem 0.2rem;
+            }
+        }
+    </style>
+    <div class="upload-container">
+        <h1 class="upload-title">Upload Image for Conversion</h1>
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <img id="preview" class="preview-img" src="#" alt="Preview">
+            <button type="submit" class="btn">Convert Image</button>
+        </form>
+    </div>
+    <script>
+        // Show image preview
+        const fileInput = document.querySelector('input[type="file"]');
+        const preview = document.getElementById('preview');
+        fileInput.addEventListener('change', function(e) {
+            const [file] = fileInput.files;
+            if (file && file.type.startsWith('image/')) {
+                preview.style.display = 'block';
+                preview.src = URL.createObjectURL(file);
+            } else {
+                preview.style.display = 'none';
+                preview.src = '#';
+            }
+        });
+    </script>
+{% endblock %}
