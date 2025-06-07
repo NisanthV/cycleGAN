@@ -29,7 +29,7 @@ Installation
 
 3. Install dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip install -r req.txt
     ```
 
 4. Download Pre-trained Models:
